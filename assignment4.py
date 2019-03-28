@@ -1,12 +1,8 @@
-import matplotlib.pyplot as plt
 import sqlite3
-import pandas as pd
-import forlium
-
 connection = None
 cursor = None
 
-
+#connect sqlite and the python code 
 def connect(path):
     global connection, cursor
     
@@ -15,56 +11,46 @@ def connect(path):
     cursor.execute(' PRAGMA foreign_keys=ON; ')
     connection.commit()
     return
-
-
+def task1():
+    global connection, cursor
+    startyear=int(input("Enter start year (YYYY):"))
+    endyear=int(input("Enter end year (YYYY):"))
+    crimetype=input("Enter crime type:")
+    
 def main():
     #creates the database
-    path = "./assignment3.db"
+    path = "./a4.db"
     connect(path)
-    drop_tables()
-    define_tables()
-    insert_data()
     #bool value to exit program
-    endGame = False
+    endGame = False    
     #all the tasks explanations
-    tasklist = ['1  Show email of all reviewers that have reviewed the paper.', '2  Show all potential reviewers for that paper.', '3  Show all reviewers whose number of reviews is in the given range.', '4  Show in how many sessions do authors participate in.', '5  Show a pie chart of the top 5 most popular areas.', '6  Show a bar chart of each reviewer average review scores for each category.', '0  Exit.']
-    #while the user keeps inputting enter, the program will not exit 
-    #according to user input, the task is executed
-    #after a task is done, the user can press enter to preform another task
+    tasklist=['1: Q1','2: Q2','3: Q3','4: Q4','E: Exit']
     while not endGame:
         for i in tasklist:
             print(i)
-        select = input('Please enter number and press enter to enter the task or exit: ')
-        if (select == '1'):
+        select=input("Enter your choice: ")
+        if (select=='1'):
             task1()
             print('')
-        elif (select == '2'):
+        elif(select=='2'):
             task2()
             print('')
-        elif (select == '3'):
+        elif(select=='3'):
             task3()
             print('')
-        elif (select == '4'):
+        elif(select=='4'):
             task4()
             print('')
-        elif (select == '5'):
-            task5()
-            print('')
-        elif (select == '6'):
-            task6()
-            print('')
-        #if the user enters 0 then the program exits 
-        elif (select == '0'):
-            endGame = True
+        elif(select=='Exit'):
+            endGame=True
         else:
             print('')
-            #if the user input is invalid 
             print('Please enter a correct command.')
-            print('')
+            print('')                
     
     connection.commit()
     connection.close()
     return    
     
 if __name__ == "__main__":
-    main()
+    main()    
