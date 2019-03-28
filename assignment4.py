@@ -1,4 +1,6 @@
 import sqlite3
+import pandas as pd
+import matplotlib.pyplot as plt
 connection = None
 cursor = None
 
@@ -16,7 +18,11 @@ def task1():
     startyear=int(input("Enter start year (YYYY):"))
     endyear=int(input("Enter end year (YYYY):"))
     crimetype=input("Enter crime type:")
-    
+    df=pd.read_sql_query('SELECT SUM(Incidents_Count) FROM crime_incidents WHERE Crime_Type=crimetype AND YEAR>=startyear AND YEAR <=endyear GROUP BY Month;',{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
+    plot=df.plot.bar(x='Month')
+    plt.plot()
+    plt.show()
+    input('Please press enter to continue')
 def main():
     #creates the database
     path = "./a4.db"
