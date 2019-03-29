@@ -36,22 +36,6 @@ def task1():
     input('Please press enter to continue')   
 
 
-def task1():
-    global connection, cursor
-    #connection.row_factory ==sqlite3.Row
-    #cursor = connection.cursor()
-    startyear=int(input("Enter start year (YYYY):"))
-    endyear=int(input("Enter end year (YYYY):"))
-    crimetype=input("Enter crime type:")
-    #df=pd.read_sql_query("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear},connection)
-    cursor.execute("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
-    df = pd.DataFrame(cursor.fetchall())  
-    plot=df.plot.bar(x="Month")
-    plot.set_xlabel("Month")
-    plt.plot()
-    plt.show()
-    input('Please press enter to continue')   
-
 def task2():
     global connection, cursor
     #asks the user for a number of locations
