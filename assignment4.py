@@ -40,7 +40,7 @@ def task2():
     cursor.execute("SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tott' , c.Latitude, c.Longitude FROM population p, coordinates c WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tott != 0 AND c.Latitude != 0 ORDER BY Tott LIMIT :number;", {"number": N}) 
     bottom = cursor.fetchall()
 
-    m = folium.Map(location=[53.5444,-113.323], zoom_start=11)
+    m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
 
     for spot in top:
         folium.Circle(location=[spot[2],spot[3]], popup= spot[0] +"<br>"+ str(spot[1]), radius= spot[1]/7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
