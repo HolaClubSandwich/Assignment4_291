@@ -65,7 +65,7 @@ def task3():
     m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
     #plots the top N points on the map including information such as neighbourhood names and number of the specific crime
     for spot in top:
-        folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+        folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1]/0.5, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
     #saves the uodated map
     m.save("sample_marker2-.html")
     
