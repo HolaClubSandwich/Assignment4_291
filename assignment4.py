@@ -59,8 +59,8 @@ def task2(count):
 def task3(count):
     global connection, cursor
     #asks the user for a year range, type of crime, and number of locations
-    start_year = int(input("Start year: "))
-    end_year = int(input("End year: "))
+    start_year = int(input("Enter start year (YYYY): "))
+    end_year = int(input("Enter end year (YYYY): "))
     crime = input("Enter a crime type: ")
     N = int(input("Enter number of locations: "))
     #runs a query to find the top N locations where the specific crime in the year range is highest
