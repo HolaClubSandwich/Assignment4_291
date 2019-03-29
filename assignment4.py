@@ -85,9 +85,9 @@ def main():
     endGame = False    
     #all the tasks explanations
     tasklist = ['1: Q1','2: Q2','3: Q3','4: Q4','E: Exit']
-    for i in tasklist:
-        print(i)
     while not endGame:
+        for i in tasklist:
+            print(i)
         choice = input('Enter your choice: ')
         if (choice == '1'):
             task1()
@@ -105,4 +105,3 @@ def main():
     
 if __name__ == "__main__":
     main()    
-   
