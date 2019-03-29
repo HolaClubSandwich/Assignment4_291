@@ -50,6 +50,25 @@ def task2():
    
     m.save("sample_marker.html")
 
+def task3():
+    global connection, cursor
+    input("Enter")
+    #asks the user for a year range, type of crime, and number of locations
+    start_year = int(input("Start year: "))
+    end_year = int(input("End year: "))
+    crime = input("Enter a crime type: ")
+    N = int(input("Enter number of locations: "))
+    #runs a query to find the top N locations where the specific crime in the year range is highest
+    cursor.execute("SELECT cr.Crime_Type, SUM(cr.Incidents_Count), cr.Neighbourhood_Name, co.Latitude, co.Longitude FROM crime_incidents cr, coordinates co WHERE cr.Crime_Type = :crime AND cr.Year >= :year1 AND cr.Year <= :year2 AND cr.Neighbourhood_Name = co.Neighbourhood_Name GROUP BY cr.Neighbourhood_Name ORDER BY SUM(cr.Incidents_Count) DESC Limit :number;", {"number": N, "crime": crime, "year1": start_year, "year2": end_year}) 
+    top = cursor.fetchall() 
+    #creates the base map of edmonton
+    m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
+    #plots the top N points on the map including information such as neighbourhood names and number of the specific crime
+    for spot in top:
+        folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+    #saves the uodated map
+    m.save("sample_marker2-.html")
+    
 def main():
     #creates the database
     path = "./a4-sampled.db"
