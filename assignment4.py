@@ -1,5 +1,6 @@
 #ask the TA how to save bar plot 
 #ask the TA why months start at 0 
+#ask the TA about data not entered
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
