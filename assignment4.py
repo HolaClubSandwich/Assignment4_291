@@ -20,46 +20,40 @@ def connect(path):
 
 def task1():
     global connection, cursor
-    #take input of start_year,end_year and crime_type
+    #connection.row_factory ==sqlite3.Row
+    #cursor = connection.cursor()
     startyear=int(input("Enter start year (YYYY):"))
     endyear=int(input("Enter end year (YYYY):"))
     crimetype=input("Enter crime type:")
-    #SQL STATAMENT TO GET THE HOW MANY TIMES A CRTIME HAPPENS IN THE RANGE GIVEN
+    #df=pd.read_sql_query("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear},connection)
     cursor.execute("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
-    #Plot the graph and save it in the same folder as the assignment.
-    df = pd.DataFrame(cursor.fetchall())
-    #set the x-axis equal to month and label it month 
+    df = pd.DataFrame(cursor.fetchall())  
     plot=df.plot.bar(x="Month")
     plot.set_xlabel("Month")
     plt.plot()
-    plt.show()
-    input('Please press enter to continue')   
+    plt.show()  
 
 
-def task2():
+def task2(count):
     global connection, cursor
-    #asks the user for a number of locations
     N = int(input("Enter number of locations: "))
-    #runs a query to find the 3 most populous locations in edmonton returning their name, population, and coordinates
     cursor.execute("SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tot' , c.Latitude, c.Longitude FROM population p, coordinates c WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tot != 0 AND c.Latitude != 0 ORDER BY Tot DESC LIMIT :number;", {"number": N}) 
     top = cursor.fetchall() 
-    #runs a query to find the 3 least populous location in edmonton returning their name, population, and coordinates
     cursor.execute("SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tott' , c.Latitude, c.Longitude FROM population p, coordinates c WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tott != 0 AND c.Latitude != 0 ORDER BY Tott LIMIT :number;", {"number": N}) 
     bottom = cursor.fetchall()
-    #instantiates the map of edmonton
-    m = folium.Map(location=[53.5444,-113.323], zoom_start=11)
-    #creates markers for the top 3 populations in edmonton
+
+    m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
+
     for spot in top:
         folium.Circle(location=[spot[2],spot[3]], popup= spot[0] +"<br>"+ str(spot[1]), radius= spot[1]/7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
-    #creates markers for the bottom 3 populations in edmonton
+   
     for spot in bottom:
         folium.Circle(location=[spot[2],spot[3]], popup= spot[0] +"<br>"+ str(spot[1]), radius= spot[1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
-    #saves the changes made to the origional map
-    m.save("sample_marker.html")
+   
+    m.save("Q2-"+str(count)+".html")
 
-def task3():
+def task3(count):
     global connection, cursor
-    input("Enter")
     #asks the user for a year range, type of crime, and number of locations
     start_year = int(input("Start year: "))
     end_year = int(input("End year: "))
@@ -72,44 +66,40 @@ def task3():
     m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
     #plots the top N points on the map including information such as neighbourhood names and number of the specific crime
     for spot in top:
-        folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1]/0.5, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+        folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
     #saves the uodated map
-    m.save("sample_marker2-.html")
-    
+    m.save("Q3-"+str(count)+".html")
+
 def main():
     #creates the database
-    path = "./a4-sampled.db"
+    path = "a4.db"
     connect(path)
+    count1 = 0
+    count2 = 0
+    count3 = 0
+    count4 = 0
     #bool value to exit program
     endGame = False    
     #all the tasks explanations
-    tasklist=['1: Q1','2: Q2','3: Q3','4: Q4','E: Exit']
+    tasklist = ['1: Q1','2: Q2','3: Q3','4: Q4','E: Exit']
+    for i in tasklist:
+        print(i)
     while not endGame:
-        for i in tasklist:
-            print(i)
-        select=input("Enter your choice: ")
-        if (select=='1'):
+        choice = input('Enter your choice: ')
+        if (choice == '1'):
             task1()
-            print('')
-        elif(select=='2'):
-            task2()
-            print('')
-        elif(select=='3'):
-            task3()
-            print('')
-        elif(select=='4'):
-            task4()
-            print('')
-        elif(select=='Exit'):
-            endGame=True
-        else:
-            print('')
-            print('Please enter a correct command.')
-            print('')                
-    
+        elif (choice == '2'):
+            count2 += 1
+            task2(count2) 
+        elif (choice == '3'):
+            count3 += 1
+            task3(count3)
+        elif (choice == 'E'):
+            endGame = True
     connection.commit()
     connection.close()
     return    
     
 if __name__ == "__main__":
     main()    
+   
