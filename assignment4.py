@@ -2,19 +2,18 @@ import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 import folium
+
 connection = None
 cursor = None
 
 #connect sqlite and the python code 
 def connect(path):
     global connection, cursor
-    
     connection = sqlite3.connect(path)
     cursor = connection.cursor()
     cursor.execute(' PRAGMA foreign_keys=ON; ')
     connection.commit()
     return
-
 
 def task1(count):
     global connection, cursor
@@ -35,7 +34,8 @@ def task1(count):
     #save as we go
     plt.savefig("Q1-"+str(count)+".png")
     plt.show()    
-    
+
+
 def task2(count):
     global connection, cursor
     #asks the user for a number of locations
@@ -71,7 +71,7 @@ def task3(count):
     m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
     #plots the top N points on the map including information such as neighbourhood names and number of the specific crime
     for spot in top:
-        folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+        folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1]*7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
     #saves the uodated map
     m.save("Q3-"+str(count)+".html")
 
@@ -92,7 +92,8 @@ def main():
             print(i)
         choice = input('Enter your choice: ')
         if (choice == '1'):
-            task1()
+            count1 += 1
+            task1(count1)
         elif (choice == '2'):
             count2 += 1
             task2(count2) 
