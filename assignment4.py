@@ -19,15 +19,15 @@ def connect(path):
 def task1(count):
     global connection, cursor
     #take input of start_year,end_year and crime_type
-    startyear=int(input("Enter start year (YYYY):"))
-    endyear=int(input("Enter end year (YYYY):"))
-    crimetype=input("Enter crime type:")
+    startyear = int(input("Enter start year (YYYY): "))
+    endyear = int(input("Enter end year (YYYY): "))
+    crimetype = input("Enter crime type: ")
     #SQL STATAMENT TO GET THE HOW MANY TIMES A CRTIME HAPPENS IN THE RANGE GIVEN
     cursor.execute("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
     #Plot the graph and save it in the same folder as the assignment.
     df = pd.DataFrame(cursor.fetchall())  
     #plots the month as the x-axis
-    plot=df.plot.bar(x=1)
+    plot = df.plot.bar(x = 1)
     plot.set_xlabel("Month")
     #changes the legend to count
     plot.legend(['count'])
