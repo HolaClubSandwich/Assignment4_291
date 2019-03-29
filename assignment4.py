@@ -1,6 +1,3 @@
-#ask the TA how to save bar plot 
-#ask the TA why months start at 0 
-#ask TA ties
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -29,11 +26,13 @@ def task1():
     cursor.execute("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
     #Plot the graph and save it in the same folder as the assignment.
     df = pd.DataFrame(cursor.fetchall())  
-    print(df)
+    #plots the month as the x-axis
     plot=df.plot.bar(x=1)
     plot.set_xlabel("Month")
+    #changes the legend to count
+    plot.legend(['count'])
     plt.plot()
-    plt.show()  
+    plt.show()    
     
 def task2(count):
     global connection, cursor
