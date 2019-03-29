@@ -54,20 +54,23 @@ def task1():
 
 def task2():
     global connection, cursor
+    #asks the user for a number of locations
     N = int(input("Enter number of locations: "))
+    #runs a query to find the 3 most populous locations in edmonton returning their name, population, and coordinates
     cursor.execute("SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tot' , c.Latitude, c.Longitude FROM population p, coordinates c WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tot != 0 AND c.Latitude != 0 ORDER BY Tot DESC LIMIT :number;", {"number": N}) 
     top = cursor.fetchall() 
+    #runs a query to find the 3 least populous location in edmonton returning their name, population, and coordinates
     cursor.execute("SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tott' , c.Latitude, c.Longitude FROM population p, coordinates c WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tott != 0 AND c.Latitude != 0 ORDER BY Tott LIMIT :number;", {"number": N}) 
     bottom = cursor.fetchall()
-
-    m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
-
+    #instantiates the map of edmonton
+    m = folium.Map(location=[53.5444,-113.323], zoom_start=11)
+    #creates markers for the top 3 populations in edmonton
     for spot in top:
         folium.Circle(location=[spot[2],spot[3]], popup= spot[0] +"<br>"+ str(spot[1]), radius= spot[1]/7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
-   
+    #creates markers for the bottom 3 populations in edmonton
     for spot in bottom:
         folium.Circle(location=[spot[2],spot[3]], popup= spot[0] +"<br>"+ str(spot[1]), radius= spot[1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
-   
+    #saves the changes made to the origional map
     m.save("sample_marker.html")
 
 def task3():
