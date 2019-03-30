@@ -81,11 +81,18 @@ def task4(count):
     start_year = int(input("Enter start year (YYYY): "))
     end_year = int(input("Enter end year (YYYY): "))
     N = int(input("Enter number of locations: "))
+    #finds the neighbourhood name 
     cursor.execute("SELECT p.Neighbourhood_Name, SUM(c.Incidents_Count), CAST(SUM(c.Incidents_Count) AS float) / CAST((p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS float) AS 'Ratio', (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Pop', co.Latitude, co.Longitude FROM crime_incidents c, population p, coordinates co WHERE Pop != 0 AND c.Year >= :year1 AND c.Year <= :year2 AND p.Neighbourhood_Name = c.Neighbourhood_Name AND c.Neighbourhood_Name = co.Neighbourhood_Name GROUP BY p.Neighbourhood_Name ORDER BY ratio DESC LIMIT :number;", {"year1": start_year, "year2": end_year, "number": N})
-    top = cursor.fetchall()
-    for i in top:
-        print(i)
-
+    locations = cursor.fetchall()
+    m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
+    for loc in locations:
+        cursor.execute("SELECT Crime_Type, SUM(Incidents_count)as 'tot' FROM crime_incidents WHERE Neighbourhood_Name = :location GROUP BY Crime_Type ORDER BY tot DESC LIMIT 1;", {"location":loc[0]})
+        crime_type = cursor.fetchall()
+        #plots the top N points on the map including information such as neighbourhood names, most common crime, and the ratio of crime to population 
+        folium.Circle(location=[loc[4],loc[5]], popup= loc[0] +"<br>"+ crime_type[0][0] + "<br>" + str(loc[2]), radius= loc[2]*600, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+    #saves the uodated map
+    m.save("Q4-"+str(count)+".html")
+       
 def main():
     #creates the database
     path = "a4.db"
