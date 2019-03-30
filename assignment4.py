@@ -22,7 +22,12 @@ def task1(count):
     endyear = int(input("Enter end year (YYYY): "))
     crimetype = input("Enter crime type: ")
     #SQL STATAMENT TO GET THE HOW MANY TIMES A CRTIME HAPPENS IN THE RANGE GIVEN
-    cursor.execute("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
+    cursor.execute('''
+                    SELECT SUM(Incidents_Count), Month 
+                    FROM crime_incidents 
+                    WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear 
+                    GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear}
+                    ''')
     #Plot the graph and save it in the same folder as the assignment.
     df = pd.DataFrame(cursor.fetchall())  
     #plots the month as the x-axis
@@ -41,10 +46,20 @@ def task2(count):
     #asks the user for a number of locations
     N = int(input("Enter number of locations: "))
     #runs a query to find the 3 most populous locations in edmonton returning their name, population, and coordinates
-    cursor.execute("SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tot' , c.Latitude, c.Longitude FROM population p, coordinates c WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tot != 0 AND c.Latitude != 0 ORDER BY Tot DESC LIMIT :number;", {"number": N}) 
+    cursor.execute('''
+                    SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tot' , c.Latitude, c.Longitude 
+                    FROM population p, coordinates c 
+                    WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tot != 0 AND c.Latitude != 0 
+                    ORDER BY Tot DESC LIMIT :number;", {"number": N}
+                    ''') 
     top = cursor.fetchall() 
     #runs a query to find the 3 least populous location in edmonton returning their name, population, and coordinates
-    cursor.execute("SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tott' , c.Latitude, c.Longitude FROM population p, coordinates c WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tott != 0 AND c.Latitude != 0 ORDER BY Tott LIMIT :number;", {"number": N}) 
+    cursor.execute('''
+                    SELECT p.Neighbourhood_Name, (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) AS 'Tott' , c.Latitude, c.Longitude
+                    FROM population p, coordinates c 
+                    WHERE p.Neighbourhood_Name = c.Neighbourhood_Name AND Tott != 0 AND c.Latitude != 0 
+                    ORDER BY Tott LIMIT :number;", {"number": N}
+                    ''') 
     bottom = cursor.fetchall()
     #instantiates the map of edmonton
     m = folium.Map(location=[53.5444,-113.323], zoom_start=11)
@@ -65,7 +80,13 @@ def task3(count):
     crime = input("Enter a crime type: ")
     N = int(input("Enter number of locations: "))
     #runs a query to find the top N locations where the specific crime in the year range is highest
-    cursor.execute("SELECT cr.Crime_Type, SUM(cr.Incidents_Count), cr.Neighbourhood_Name, co.Latitude, co.Longitude FROM crime_incidents cr, coordinates co WHERE cr.Crime_Type = :crime AND cr.Year >= :year1 AND cr.Year <= :year2 AND cr.Neighbourhood_Name = co.Neighbourhood_Name GROUP BY cr.Neighbourhood_Name ORDER BY SUM(cr.Incidents_Count) DESC Limit :number;", {"number": N, "crime": crime, "year1": start_year, "year2": end_year}) 
+    cursor.execute('''
+                    SELECT cr.Crime_Type, SUM(cr.Incidents_Count), cr.Neighbourhood_Name, co.Latitude, co.Longitude 
+                    FROM crime_incidents cr, coordinates co
+                    WHERE cr.Crime_Type = :crime AND cr.Year >= :year1 AND cr.Year <= :year2 AND cr.Neighbourhood_Name = co.Neighbourhood_Name 
+                    GROUP BY cr.Neighbourhood_Name 
+                    ORDER BY SUM(cr.Incidents_Count) DESC Limit :number;", {"number": N, "crime": crime, "year1": start_year, "year2": end_year}
+                    ''') 
     top = cursor.fetchall() 
     #creates the base map of edmonton
     m = folium.Map(location=[53.532407, -113.493805], zoom_start=12)
@@ -74,6 +95,14 @@ def task3(count):
         folium.Circle(location=[spot[3],spot[4]], popup= spot[2] +"<br>"+ str(spot[1]), radius= spot[1]*7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
     #saves the uodated map
     m.save("Q3-"+str(count)+".html")
+def task4():
+    cursor.execute('''
+                    SELECT p.Neighbourhood_Name, SUM(c.Incidents_Count), cast(SUM(c.Incidents_Count) as float) / cast((p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) as float) as 'Ratio', (p.CANADIAN_CITIZEN + p.NON_CANADIAN_CITIZEN + p.NO_RESPONSE) as "Pop", co.Latitude, co.Longitude    
+                    FROM crime_incidents c, population p, coordinates co
+                    WHERE Pop != 0 AND c.Year >= 2014 AND c.Year <= 2015 AND p.Neighbourhood_Name = c.Neighbourhood_Name AND c.Neighbourhood_name = co.Neighbourhood_Name
+                    GROUP BY p.Neighbourhood_Name
+                    ORDER BY ratio desc
+                    ''')
 
 def main():
     #creates the database
