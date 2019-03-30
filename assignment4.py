@@ -89,14 +89,21 @@ def task3(count):
     index = 0
     incident_count = 0
     position = 0
-    while index != N:
-        folium.Circle(location=[top[position][3],top[position][4]], popup= top[position][2] +"<br>"+ str(top[position][1]), radius= top[position][1]*7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
-        #includes ties
-        if incident_count != top[position][1]: 
+    repeat_count = N
+    while (index != N):
+        #dealing with ties
+        if (incident_count == top[position][1]):
+            repeat_count = repeat_count - 1
+            folium.Circle(location=[top[position][3],top[position][4]], popup= top[position][2] +"<br>"+ str(top[position][1]), radius= top[position][1]*7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+        else:
             index += 1
             incident_count = top[position][1]
-        position += 1  
-    #saves the uodated map
+            if (repeat_count != 0):
+                folium.Circle(location=[top[position][3],top[position][4]], popup= top[position][2] +"<br>"+ str(top[position][1]), radius= top[position][1]*7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+                repeat_count = repeat_count - 1
+            elif (repeat_count < 0):
+                index = N
+        position += 1
     m.save("Q3-"+str(count)+".html")
 
 def task4(count):
