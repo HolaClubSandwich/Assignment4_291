@@ -22,7 +22,7 @@ def task1(count):
     endyear = int(input("Enter end year (YYYY): "))
     crimetype = input("Enter crime type: ")
     #SQL STATAMENT TO GET THE HOW MANY TIMES A CRTIME HAPPENS IN THE RANGE GIVEN
-    cursor.execute("SELECT SUM(Incidents_Count), Month FROM crime_incidents WHERE Crime_Type=:crimetype AND YEAR>=:startyear AND YEAR <=:endyear GROUP BY Month;",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
+    cursor.execute("SELECT tb2.Tot, tb1.Month FROM (SELECT Month FROM crime_incidents WHERE Month != 'Month' GROUP BY Month) tb1 LEFT JOIN (SELECT SUM(Incidents_Count) as 'Tot', Month FROM crime_incidents WHERE Crime_Type= :crimetype AND YEAR >= :startyear AND YEAR <= :endyear GROUP BY Month) tb2 ON(tb1.Month = tb2.Month);",{"crimetype":crimetype,"startyear":startyear,"endyear":endyear})
     #Plot the graph and save it in the same folder as the assignment.
     df = pd.DataFrame(cursor.fetchall())  
     #plots the month as the x-axis
