@@ -190,9 +190,10 @@ def main():
             task4(count4)
         elif (choice == 'E'):
             endGame = True
+        else:
+            print('Please enter a correct choice.')
     connection.commit()
     connection.close()
-    return    
-    
+    return     
 if __name__ == "__main__":
-    main()    
+    main()       
