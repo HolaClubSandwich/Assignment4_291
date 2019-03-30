@@ -52,23 +52,39 @@ def task2(count):
     index = 0
     population = 0
     position = 0
-    while index != N:
-        folium.Circle(location=[top[position][2],top[position][3]], popup= top[position][0] +"<br>"+ str(top[position][1]), radius= top[position][1]/7, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
-        #includes ties
-        if population != top[position][1]:
+    repeat_count = N
+    while (index != N):
+        #dealing with ties
+        if (population == top[position][1]):
+            repeat_count = repeat_count - 1
+            folium.Circle(location=[top[position][2],top[position][3]], popup= top[position][0] +"<br>"+ str(top[position][1]), radius= top[position][1]/10, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+        else:
             index += 1
             population = top[position][1]
-        position += 1 
+            if (repeat_count != 0):
+                folium.Circle(location=[top[position][2],top[position][3]], popup= top[position][0] +"<br>"+ str(top[position][1]), radius= top[position][1]/10, color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+                repeat_count = repeat_count - 1
+            elif (repeat_count < 0):
+                index = N
+        position += 1
     #creates markers for the bottom 3 populations in edmonton
     index2 = 0
     population2 = 0
     position2 = 0
-    while index2 != N:
-        folium.Circle(location=[bottom[position2][2],bottom[position2][3]], popup= bottom[position2][0] +"<br>"+ str(bottom[position2][1]), radius= bottom[position2][1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
-        #includes ties
-        if population2 != bottom[position2][1]:
+    repeat_count2 = N
+    while (index2 != N):
+        #dealing with ties
+        if (population2 == bottom[position2][1]):
+            repeat_count2 = repeat_count2 - 1
+            folium.Circle(location=[bottom[position2][2],bottom[position2][3]], popup= bottom[position2][0] +"<br>"+ str(bottom[position2][1]), radius= bottom[position2][1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+        else:
             index2 += 1
             population2 = bottom[position2][1]
+            if (repeat_count2 != 0):
+                folium.Circle(location=[bottom[position2][2],bottom[position2][3]], popup= bottom[position2][0] +"<br>"+ str(bottom[position2][1]), radius= bottom[position2][1], color= 'crimson', fill= True, fill_color= "crimson").add_to(m)
+                repeat_count2 = repeat_count2 - 1
+            elif (repeat_count2 < 0):
+                index2 = N
         position2 += 1
     #saves the positions on the map
     m.save("Q2-"+str(count)+".html")
